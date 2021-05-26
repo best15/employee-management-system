@@ -2,8 +2,9 @@
   "name": "employee-management-system",
   "version": "1.0.0",
   "description": "EMS",
-  "main": "index.js",
+  "main": "EMS.js",
   "scripts": {
+    "start": "node EMS.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
