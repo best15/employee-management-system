@@ -42,7 +42,6 @@ VALUES
   ("Bobby", "Dylon", 4, null),("Tom", "J", 6, 5),
   ("Kevin", "Jonson", 5, null);
 select
-select
   e1.id,
   e1.first_name,
   e1.last_name,
