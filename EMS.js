@@ -4,6 +4,7 @@ const inquirer = require('inquirer');
 
 const { viewAllEmployees, viewEmployeeByDept, viewEmployeeByRole, } = require('./viewemployee');
 const { addNewEmployee, addDepartment, addNewRole } = require('./add');
+const { removeEmployee, } = require('./removeEmployee');
 
 const connection = require('./config/connection');
 
@@ -130,6 +131,28 @@ async function addRolesPrompts(departments) {
     addNewRole(roleData.title, roleData.salary, roleData.department);
 }
 
+async function removeEmployeePrompts() {
+
+    const employeeList = await connection.query('Select concat(first_name, " ", last_name) as EmployeeName from employee');
+    let employeeNames = employeeList[0].map(employee => employee.EmployeeName);
+
+
+    const removeEmployeePrompts = [
+        {
+            type: 'list',
+            name: 'EmployeeName',
+            message: 'Select Employee you want to remove :',
+            choices: employeeNames,
+
+        },
+    ]
+
+    const tobeRemoveEmp = await inquirer.prompt(removeEmployeePrompts);
+    removeEmployee(tobeRemoveEmp.EmployeeName);
+
+}
+
+
 function proceedUserChoice(userChoice) {
 
     switch (userChoice.action) {
@@ -164,6 +187,7 @@ function proceedUserChoice(userChoice) {
 
             break;
         case "Remove Employee":
+            removeEmployeePrompts();
             break;
 
         case "Update Employee Role":

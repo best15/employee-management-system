@@ -1,5 +1,5 @@
 const connection = require('./config/connection');
-
+const { viewAllEmployees, } = require('./viewemployee');
 
 add = {
 
@@ -19,13 +19,13 @@ add = {
             , [f_name, l_name, role_id[0][0].id, manager_id[0][0].id],
             (err, result) => {
                 if (err) throw (err);
+
                 console.log("Employee successfully added !");
             }
 
         );
 
-        const res = await connection.query("Select * FROM employee");
-        console.table(res[0]);
+        viewAllEmployees();
 
     },
 
@@ -34,6 +34,7 @@ add = {
         await connection.query("Insert into department (D_name) values(?);"
             , [dept_name], (err, result) => {
                 if (err) throw err;
+
                 console.log("New Department Added Successfully !")
             }
 
