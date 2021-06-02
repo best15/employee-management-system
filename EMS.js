@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 
 
 const { viewAllEmployees, viewEmployeeByDept, viewEmployeeByRole, } = require('./viewemployee');
-const { addNewEmployee, addDepartment } = require('./add');
+const { addNewEmployee, addDepartment, addNewRole } = require('./add');
 
 const connection = require('./config/connection');
 
@@ -19,7 +19,7 @@ const showMenu = async () => {
             message: 'What do you like to do ?  ',
             choices: ["View all employees", "View employees by department",
                 "View all employees by Role", "Add Employee", "Add Department",
-                "Remove Employee", "Update Employee Role", "Update Employee Manager"]
+                "Add Role", "Remove Employee", "Update Employee Role", "Update Employee Manager"]
         }
     ]
 
@@ -72,7 +72,7 @@ const addEmployee = async () => {
     let titles = roles[0].map(role => role.title);
 
     // get all Employee name 
-    let names = await connection.query(`select concat(first_name, " ", last_name) as manager from employee; `)
+    let names = await connection.query(`select concat(first_name, " ", last_name) as manager from employee; `);
     let managerNames = names[0].map(name => name.manager);
 
 
@@ -92,6 +92,42 @@ async function addDepartmentPrompts() {
 
     const newDepartment = await inquirer.prompt(deptPrompts);
     addDepartment(newDepartment.department);
+}
+
+const addRole = async () => {
+
+    // get all Department names
+    let departments = await connection.query(`select D_name from department`);
+
+    const departmentNames = departments[0].map(department => department.D_name);
+    addRolesPrompts(departmentNames);
+}
+
+async function addRolesPrompts(departments) {
+    const rolePrompts = [
+        {
+            type: 'input',
+            name: 'title',
+            message: 'Enter new title :',
+
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'Enter Salary for new title :',
+
+        },
+        {
+            type: 'list',
+            name: 'department',
+            message: 'Select Department for new title :',
+            choices: departments
+
+        }
+    ]
+    const roleData = await inquirer.prompt(rolePrompts);
+
+    addNewRole(roleData.title, roleData.salary, roleData.department);
 }
 
 function proceedUserChoice(userChoice) {
@@ -123,6 +159,10 @@ function proceedUserChoice(userChoice) {
             break;
 
 
+        case "Add Role":
+            addRole();
+
+            break;
         case "Remove Employee":
             break;
 
