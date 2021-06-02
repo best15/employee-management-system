@@ -12,15 +12,9 @@ update = {
         const role_id = await connection.query(
             "select id from role where title = ?;", [updatedTitle]);
 
-        await connection.query(`Update employee set role_id = ? where concat(first_name, " ", last_name) = ?;`, [role_id[0][0].id, employeeName],
-            (err, result) => {
-                if (err) throw err;
+        await connection.query(`Update employee set role_id = ? where concat(first_name, " ", last_name) = ?;`, [role_id[0][0].id, employeeName]);
 
-                console.log("Employee Role Update Successfull !");
-            }
-
-        );
-
+        console.log("Employee Role Update Successfull !");
 
         await viewAllEmployees();
     },
@@ -33,14 +27,11 @@ update = {
         const manager_id = await connection.query(
             `select id from employee where concat(first_name, " ", last_name) = ?;`, [managerName]);
 
-        await connection.query(`Update employee set manager_id = ? where concat(first_name, " ", last_name) = ?;`, [manager_id[0][0].id, employeeName],
-            (err, result) => {
-                if (err) throw err;
+        await connection.query(`Update employee set manager_id = ? where concat(first_name, " ", last_name) = ?;`, [manager_id[0][0].id, employeeName]);
 
-                console.log("Employee Manager Updated Successfull !");
-            }
+        console.log("Employee Manager Update Successfull !");
 
-        );
+
         await viewAllEmployees();
     },
 

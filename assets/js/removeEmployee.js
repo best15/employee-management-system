@@ -6,16 +6,12 @@ remove = {
 
     removeEmployee: async (employeeName) => {
 
-        console.log(employeeName);
 
-        await connection.query(`delete from employee where concat(first_name, " ", last_name) = ?;`, [employeeName],
-            (err, result) => {
-                if (err) throw err;
-                console.log("Employee Removed Successfully !")
-            }
+        await connection.query(`delete from employee where concat(first_name, " ", last_name) = ?;`, [employeeName]);
 
-        );
-        viewAllEmployees();
+        console.log("Employee Removed Successfully !");
+
+        await viewAllEmployees();
     },
 
 

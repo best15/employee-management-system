@@ -16,14 +16,9 @@ add = {
 
         //Create new employee as per user input
         await connection.query("Insert into employee(first_name,last_name,role_id,manager_id) values(?,?,?,?);"
-            , [f_name, l_name, role_id[0][0].id, manager_id[0][0].id],
-            (err, result) => {
-                if (err) throw (err);
+            , [f_name, l_name, role_id[0][0].id, manager_id[0][0].id]);
 
-                console.log("Employee successfully added !");
-            }
-
-        );
+        console.log("Employee successfully added !");
 
         await viewAllEmployees();
 
@@ -32,13 +27,8 @@ add = {
     addDepartment: async (dept_name) => {
 
         await connection.query("Insert into department (D_name) values(?);"
-            , [dept_name], (err, result) => {
-                if (err) throw err;
-
-                console.log("New Department Added Successfully !")
-            }
-
-        );
+            , [dept_name]);
+        console.log("New Department Added Successfully !");
 
         const res = await connection.query("Select * FROM department");
         console.table(res[0]);
@@ -52,12 +42,9 @@ add = {
             "select id from department where D_name = ?;", [dept_name]);
 
         await connection.query("Insert into role (title, salary, department_id) values(?,?,?);"
-            , [title, salary, department_id[0][0].id], (err, result) => {
-                if (err) throw err;
-                console.log("New Role Added Successfully !")
-            }
+            , [title, salary, department_id[0][0].id]);
 
-        );
+        console.log("New Role Added Successfully !");
 
         const res = await connection.query("Select * FROM role");
         console.table(res[0]);

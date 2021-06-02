@@ -237,7 +237,7 @@ async function UpdateEmployeeRolePrompts() {
     ]
 
     const updatedEmpData = await inquirer.prompt(updateRolePrompts);
-    updateEmployeeRole(updatedEmpData.employeeName, updatedEmpData.role);
+    await updateEmployeeRole(updatedEmpData.employeeName, updatedEmpData.role);
 
 
 
@@ -268,20 +268,11 @@ async function UpdateEmployeeManagerPrompts() {
     ]
 
     const updatedEmpData = await inquirer.prompt(updateManagerPrompts);
-    updateEmployeeManager(updatedEmpData.employeeName, updatedEmpData.managerName);
+    await updateEmployeeManager(updatedEmpData.employeeName, updatedEmpData.managerName);
 
 
 
 }
 
 mainMenu();
-// async function init() {
-//     const connection = await connection.connect();
-//     if (connection) {
-//         console.log(`PlaylistDB connected as id ${connection.threadId}`);
-//         showMenu();
-//     }
-// };
 
-
-// init();
