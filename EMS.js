@@ -37,50 +37,56 @@ const mainMenu = async () => {
 }
 
 //User main menu choices and function to call on those choices
-function proceedUserChoice(userChoice) {
+async function proceedUserChoice(userChoice) {
 
     switch (userChoice.action) {
 
         case "View all employees":
-            viewAllEmployees();
+            await viewAllEmployees();
+            mainMenu();
             break;
 
 
         case "View employees by department":
-            viewEmployeeByDept();
+            await viewEmployeeByDept();
+            mainMenu();
             break;
 
 
         case "View all employees by Role":
-            viewEmployeeByRole();
+            await viewEmployeeByRole();
+            mainMenu();
             break;
 
         case "Add Employee":
-            addEmployeePrompts();
-
+            await addEmployeePrompts();
+            mainMenu();
             break;
 
         case "Add Department":
-            addDepartmentPrompts();
-
+            await addDepartmentPrompts();
+            mainMenu();
             break;
 
 
         case "Add Role":
-            addRolesPrompts();
-
+            await addRolesPrompts();
+            mainMenu();
             break;
 
         case "Remove Employee":
-            removeEmployeePrompts();
+            await removeEmployeePrompts();
+            mainMenu();
             break;
 
         case "Update Employee Role":
-            UpdateEmployeeRolePrompts();
+            await UpdateEmployeeRolePrompts();
+            mainMenu();
             break;
 
         case "Update Employee Manager":
-            UpdateEmployeeManagerPrompts();
+            await UpdateEmployeeManagerPrompts();
+            mainMenu();
             break;
 
         case "EXIT":
@@ -131,7 +137,7 @@ async function addEmployeePrompts() {
     ]
 
     const employeeData = await inquirer.prompt(newEmpData);
-    addNewEmployee(employeeData.firstname, employeeData.lastname, employeeData.title, employeeData.manager);
+    await addNewEmployee(employeeData.firstname, employeeData.lastname, employeeData.title, employeeData.manager);
 };
 
 
@@ -147,7 +153,7 @@ async function addDepartmentPrompts() {
     ]
 
     const newDepartment = await inquirer.prompt(deptPrompts);
-    addDepartment(newDepartment.department);
+    await addDepartment(newDepartment.department);
 }
 
 
@@ -180,7 +186,7 @@ async function addRolesPrompts() {
     ]
     const roleData = await inquirer.prompt(rolePrompts);
 
-    addNewRole(roleData.title, roleData.salary, roleData.department);
+    await addNewRole(roleData.title, roleData.salary, roleData.department);
 }
 
 //Prompt to Remove Employee
@@ -201,7 +207,7 @@ async function removeEmployeePrompts() {
     ]
 
     const tobeRemoveEmp = await inquirer.prompt(removeEmployeePrompts);
-    removeEmployee(tobeRemoveEmp.EmployeeName);
+    await removeEmployee(tobeRemoveEmp.EmployeeName);
 
 }
 

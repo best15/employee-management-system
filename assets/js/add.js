@@ -25,7 +25,7 @@ add = {
 
         );
 
-        viewAllEmployees();
+        await viewAllEmployees();
 
     },
 

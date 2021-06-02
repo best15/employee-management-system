@@ -22,7 +22,7 @@ update = {
         );
 
 
-        viewAllEmployees();
+        await viewAllEmployees();
     },
 
     updateEmployeeManager: async (employeeName, managerName) => {
@@ -41,7 +41,7 @@ update = {
             }
 
         );
-        viewAllEmployees();
+        await viewAllEmployees();
     },
 
 
