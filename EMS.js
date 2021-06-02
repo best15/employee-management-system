@@ -2,8 +2,9 @@ require('dotenv').config();
 const inquirer = require('inquirer');
 
 
-const { viewAllEmployees, viewEmployeeByDept, viewEmployeeByRole, addNewEmployee } = require('./viewemployee');
-const getRoles = require('./getRoles');
+const { viewAllEmployees, viewEmployeeByDept, viewEmployeeByRole, } = require('./viewemployee');
+const { addNewEmployee, addDepartment } = require('./add');
+
 const connection = require('./config/connection');
 
 
@@ -17,7 +18,7 @@ const showMenu = async () => {
             name: 'action',
             message: 'What do you like to do ?  ',
             choices: ["View all employees", "View employees by department",
-                "View all employees by Role", "Add Employee",
+                "View all employees by Role", "Add Employee", "Add Department",
                 "Remove Employee", "Update Employee Role", "Update Employee Manager"]
         }
     ]
@@ -30,7 +31,7 @@ const showMenu = async () => {
 
 
 //propmts for employee details  when user choose add employee choice
-async function addPrompts(roles, names) {
+async function addEmployeePrompts(roles, names) {
     const newEmpData = [
         {
             type: 'input',
@@ -60,7 +61,7 @@ async function addPrompts(roles, names) {
 
     const employeeData = await inquirer.prompt(newEmpData);
     addNewEmployee(employeeData.firstname, employeeData.lastname, employeeData.title, employeeData.manager);
-}
+};
 
 //generates employee role choices
 const addEmployee = async () => {
@@ -75,7 +76,22 @@ const addEmployee = async () => {
     let managerNames = names[0].map(name => name.manager);
 
 
-    addPrompts(titles, managerNames);
+    addEmployeePrompts(titles, managerNames);
+};
+
+//Prompts to add Department
+async function addDepartmentPrompts() {
+    const deptPrompts = [
+        {
+            type: 'input',
+            name: 'department',
+            message: 'Enter new department name',
+
+        }
+    ]
+
+    const newDepartment = await inquirer.prompt(deptPrompts);
+    addDepartment(newDepartment.department);
 }
 
 function proceedUserChoice(userChoice) {
@@ -98,6 +114,11 @@ function proceedUserChoice(userChoice) {
 
         case "Add Employee":
             addEmployee();
+
+            break;
+
+        case "Add Department":
+            addDepartmentPrompts();
 
             break;
 
