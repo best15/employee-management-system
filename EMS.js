@@ -1,10 +1,15 @@
 require('dotenv').config();
 const inquirer = require('inquirer');
+
+
+const { viewAllEmployees, viewEmployeeByDept, viewEmployeeByRole, addNewEmployee } = require('./viewemployee');
+const getRoles = require('./getRoles');
 const connection = require('./config/connection');
 
-const ViewEmployee = require('./viewemployee');
 
-//first prompt for users
+
+
+//first prompt for users asking what users like to do
 const showMenu = async () => {
     const question = [
         {
@@ -23,21 +28,9 @@ const showMenu = async () => {
 
 }
 
-// function getRoleid() {
-
-//     connection.query(
-//         `select id from role where title = 'Marketing Head';
-//         ;`,
-//         (err, response) => {
-//             if (err) throw err;
-//             employeeData = response;
-
-//         });
-//     console.log(employeeData.role);
-// }
 
 //propmts for employee details  when user choose add employee choice
-async function addPrompts(roles) {
+async function addPrompts(roles, names) {
     const newEmpData = [
         {
             type: 'input',
@@ -55,30 +48,34 @@ async function addPrompts(roles) {
             message: 'Select employee title/role',
             choices: roles,
         },
+        {
+            type: 'list',
+            name: 'manager',
+            message: 'Select employee manager',
+            choices: names,
+        },
 
 
     ]
 
     const employeeData = await inquirer.prompt(newEmpData);
-    // addEmployee(employeeData.firstname, employeeData.lastname, employeeData.title, employeeData.manager);
+    addNewEmployee(employeeData.firstname, employeeData.lastname, employeeData.title, employeeData.manager);
 }
 
 //generates employee role choices
 const addEmployee = async () => {
-    let titles = [];
-    connection.query(
-        `select title from role ;
-        ;`, (err, response) => {
-        if (err) throw err;
-        roles(response);
-    });
 
-    function roles(roles) {
+    //get all the titles from role table 
+    let roles = await connection.query(
+        `select title from role;`);
+    let titles = roles[0].map(role => role.title);
 
-        titles = roles.map(role => role.title);
-        addPrompts(titles);
-    }
+    // get all Employee name 
+    let names = await connection.query(`select concat(first_name, " ", last_name) as manager from employee; `)
+    let managerNames = names[0].map(name => name.manager);
 
+
+    addPrompts(titles, managerNames);
 }
 
 function proceedUserChoice(userChoice) {
@@ -86,40 +83,50 @@ function proceedUserChoice(userChoice) {
     switch (userChoice.action) {
 
         case "View all employees":
-            ViewEmployee.viewAllEmployees();
+            viewAllEmployees();
             break;
 
 
         case "View employees by department":
-            ViewEmployee.viewEmployeeByDept();
+            viewEmployeeByDept();
             break;
 
 
         case "View all employees by Role":
-            ViewEmployee.viewEmployeeByRole();
+            viewEmployeeByRole();
             break;
 
         case "Add Employee":
             addEmployee();
+
             break;
 
 
         case "Remove Employee":
-
-
+            break;
 
         case "Update Employee Role":
-
+            break;
 
         case "Update Employee Manager":
+            break;
+
+        default:
+            break;
 
     }
 
 
 }
 
-connection.connect((err) => {
-    if (err) throw err;
-    console.log(`PlaylistDB connected as id ${connection.threadId}`);
-    showMenu();
-});
+showMenu();
+// async function init() {
+//     const connection = await connection.connect();
+//     if (connection) {
+//         console.log(`PlaylistDB connected as id ${connection.threadId}`);
+//         showMenu();
+//     }
+// };
+
+
+// init();
