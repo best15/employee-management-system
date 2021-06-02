@@ -1,13 +1,17 @@
 require('dotenv').config();
+const connection = require('./config/connection');
+
 const inquirer = require('inquirer');
 
 
-const { viewAllEmployees, viewEmployeeByDept, viewEmployeeByRole, } = require('./viewemployee');
-const { addNewEmployee, addDepartment, addNewRole } = require('./add');
-const { removeEmployee, } = require('./removeEmployee');
-const { updateEmployeeRole, updateEmployeeManager } = require('./update');
+const { viewAllEmployees, viewEmployeeByDept, viewEmployeeByRole, } = require('./assets/js/viewemployee');
+const { addNewEmployee, addDepartment, addNewRole } = require('./assets/js/add');
+const { removeEmployee, } = require('./assets/js/removeEmployee');
+const { updateEmployeeRole, updateEmployeeManager } = require('./assets/js/update');
+const getRoles = require('./assets/js/getRoles');
+const getEmployeeNames = require('./assets/js/getEmployeeNames');
+const getDepartmentNames = require('./assets/js/getDepartmentNames');
 
-const connection = require('./config/connection');
 
 
 
@@ -52,7 +56,7 @@ function proceedUserChoice(userChoice) {
             break;
 
         case "Add Employee":
-            addEmployee();
+            addEmployeePrompts();
 
             break;
 
@@ -63,7 +67,7 @@ function proceedUserChoice(userChoice) {
 
 
         case "Add Role":
-            addRole();
+            addRolesPrompts();
 
             break;
 
@@ -94,7 +98,11 @@ function proceedUserChoice(userChoice) {
 
 
 //propmt to add new Employee
-async function addEmployeePrompts(roles, names) {
+async function addEmployeePrompts() {
+
+    const names = await getEmployeeNames();
+    const roles = await getRoles();
+
     const newEmpData = [
         {
             type: 'input',
@@ -126,21 +134,6 @@ async function addEmployeePrompts(roles, names) {
     addNewEmployee(employeeData.firstname, employeeData.lastname, employeeData.title, employeeData.manager);
 };
 
-//generates title list and manager name list choices for addEmployeePrompts 
-const addEmployee = async () => {
-
-    //get all the titles from role table 
-    let roles = await connection.query(
-        `select title from role;`);
-    let titles = roles[0].map(role => role.title);
-
-    // get all Employee name 
-    let names = await connection.query(`select concat(first_name, " ", last_name) as manager from employee; `);
-    let managerNames = names[0].map(name => name.manager);
-
-
-    addEmployeePrompts(titles, managerNames);
-};
 
 //Prompts to add Department
 async function addDepartmentPrompts() {
@@ -148,7 +141,7 @@ async function addDepartmentPrompts() {
         {
             type: 'input',
             name: 'department',
-            message: 'Enter new department name',
+            message: 'Enter new department name :',
 
         }
     ]
@@ -157,18 +150,13 @@ async function addDepartmentPrompts() {
     addDepartment(newDepartment.department);
 }
 
-//generates department name list for addRolePrompts
-const addRole = async () => {
 
-    // get all Department names
-    let departments = await connection.query(`select D_name from department`);
-
-    const departmentNames = departments[0].map(department => department.D_name);
-    addRolesPrompts(departmentNames);
-}
 
 //Prompt to add New Role/title
-async function addRolesPrompts(departments) {
+async function addRolesPrompts() {
+
+    const departments = await getDepartmentNames();
+
     const rolePrompts = [
         {
             type: 'input',
@@ -198,8 +186,8 @@ async function addRolesPrompts(departments) {
 //Prompt to Remove Employee
 async function removeEmployeePrompts() {
 
-    const employeeList = await connection.query('Select concat(first_name, " ", last_name) as EmployeeName from employee');
-    let employeeNames = employeeList[0].map(employee => employee.EmployeeName);
+
+    const employeeNames = await getEmployeeNames();
 
 
     const removeEmployeePrompts = [
@@ -219,13 +207,8 @@ async function removeEmployeePrompts() {
 
 async function UpdateEmployeeRolePrompts() {
 
-    const employeeList = await connection.query('Select concat(first_name, " ", last_name) as EmployeeName from employee');
-    const employeeNames = employeeList[0].map(employee => employee.EmployeeName);
-
-    //get all the titles from role table 
-    const titlelist = await connection.query(
-        `select title from role;`);
-    const titles = titlelist[0].map(role => role.title);
+    const employeeNames = await getEmployeeNames();
+    const titles = await getRoles();
 
     const updateRolePrompts = [
         {
@@ -255,9 +238,8 @@ async function UpdateEmployeeRolePrompts() {
 }
 async function UpdateEmployeeManagerPrompts() {
 
-    const employeeList = await connection.query('Select concat(first_name, " ", last_name) as EmployeeName from employee');
-    const employeeNames = employeeList[0].map(employee => employee.EmployeeName);
 
+    const employeeNames = await getEmployeeNames();
 
     const updateManagerPrompts = [
         {

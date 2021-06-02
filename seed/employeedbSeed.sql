@@ -41,16 +41,3 @@ VALUES
   ("Steve", "Hut", 2, 7),("Sadio", "Mane", 3, 5),
   ("Bobby", "Dylon", 4, null),("Tom", "J", 6, 5),
   ("Kevin", "Jonson", 5, null);
-select
-  e1.id,
-  e1.first_name,
-  e1.last_name,
-  role.title,
-  role.salary,
-  department.D_name AS Department,
-  concat(e2.first_name, " ", e2.last_name) as Manager
-from
-  employee e1
-  INNER JOIN role ON e1.role_id = role.id
-  INNER JOIN department on role.department_id = department.id
-  JOIN employee e2 on e1.manager_id = e2.id;
